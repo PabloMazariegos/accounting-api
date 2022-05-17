@@ -1,0 +1,23 @@
+server:
+  port: 5000
+  servlet:
+    context-path: /accounting
+
+
+spring:
+  application:
+    name: accounting-api
+  jpa:
+    database: postgresql
+    show-sql: true
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  datasource:
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  flyway:
+    baseline-on-migrate: true
+    schemas: public

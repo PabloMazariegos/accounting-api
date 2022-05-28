@@ -18,6 +18,4 @@ spring:
     username: ${DATABASE_USERNAME}
     password: ${DATABASE_PASSWORD}
     driver-class-name: org.postgresql.Driver
-  flyway:
-    baseline-on-migrate: true
-    schemas: public
+

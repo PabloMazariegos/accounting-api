@@ -2,10 +2,15 @@ plugins {
 	id 'org.springframework.boot' version '2.6.6'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
+	id 'com.palantir.docker' version '0.33.0'
+}
+
+ext {
+	dockerRepository = "pblpnt"
 }
 
 group = 'com.pmmp'
-version = '0.0.1-SNAPSHOT'
+version = "1.0.0"
 sourceCompatibility = '11'
 
 configurations {
@@ -28,3 +33,11 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
+
+docker {
+	name "${dockerRepository}/${bootJar.archiveBaseName.get()}"
+	files bootJar.archiveFile
+	buildArgs([ 'BUILD_VERSION': "${version}" ])
+	dockerfile file('src/main/docker/Dockerfile')
+}
+docker.dependsOn build

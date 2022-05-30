@@ -48,3 +48,5 @@ jobs:
           context: .
           push: true
           tags: pblpnt/accounting-api:${{ steps.vars.outputs.sha_short }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache

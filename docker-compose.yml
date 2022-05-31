@@ -1,0 +1,13 @@
+version: '3'
+services:
+  accounting-api:
+    container_name: accounting-container
+    image: pblpnt/accounting-api:latest
+    ports:
+      - "5000:5000"
+    environment:
+      - DATABASE_PASSWORD=$$Egurid@d20
+      - DATABASE_URL=jdbc:postgresql://host.docker.internal:5432/accounting
+      - DATABASE_USERNAME=postgres
+
+

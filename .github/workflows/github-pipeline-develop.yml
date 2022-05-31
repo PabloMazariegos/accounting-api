@@ -3,9 +3,7 @@ name: github pipeline
 on:
   push:
     branches:
-      - '*'
-      - '*/*'
-      - '**'
+      - 'develop'
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -35,4 +33,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: pblpnt/accounting-api:latest
+          tags: pblpnt/accounting-api:develop

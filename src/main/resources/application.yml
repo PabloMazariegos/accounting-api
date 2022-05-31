@@ -3,7 +3,6 @@ server:
   servlet:
     context-path: /accounting
 
-
 spring:
   application:
     name: accounting-api
@@ -18,4 +17,8 @@ spring:
     username: ${DATABASE_USERNAME}
     password: ${DATABASE_PASSWORD}
     driver-class-name: org.postgresql.Driver
+  rabbitmq:
+    host: localhost
+    port: 5672
+
 

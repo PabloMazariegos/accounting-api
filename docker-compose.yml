@@ -2,7 +2,7 @@ version: '3'
 services:
   accounting-api:
     container_name: accounting-container
-    image: pblpnt/accounting-api:fea0058
+    image: pblpnt/accounting-api:latest
     ports:
       - "5000:5000"
     environment:

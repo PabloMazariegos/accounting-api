@@ -1,7 +1,7 @@
-package com.pmmp.sales.controller;
+package com.pmmp.controller;
 
-import com.pmmp.sales.model.request.UploadFileRequest;
-import com.pmmp.sales.service.SalesService;
+import com.pmmp.model.request.UploadFileRequest;
+import com.pmmp.service.SalesService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

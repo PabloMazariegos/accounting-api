@@ -1,12 +1,13 @@
-package com.pmmp.sales.service;
+package com.pmmp.service;
 
 import com.pmmp.exception.impl.ConfigurationException;
 import com.pmmp.exception.impl.InternalServiceException;
 import com.pmmp.listener.model.UploadSatFileRequestMessage;
+import com.pmmp.listener.service.QueueMessageService;
 import com.pmmp.model.SatFile;
+import com.pmmp.model.enums.DocumentType;
 import com.pmmp.repository.SatFileRepository;
-import com.pmmp.sales.enums.DocumentType;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.core.DestinationResolutionException;
 import org.springframework.stereotype.Service;
@@ -15,25 +16,27 @@ import javax.transaction.Transactional;
 import java.util.Base64;
 import java.util.UUID;
 
-import static com.pmmp.config.rabbitmq.RabbitMQConfig.EXCHANGE_NAME;
-import static com.pmmp.config.rabbitmq.RabbitMQConfig.QUEUE_NAME;
-import static com.pmmp.config.rabbitmq.RabbitMQConfig.ROUTING_KEY;
+import static com.pmmp.config.rabbitmq.RabbitMQConfig.RETRY_EXCHANGE_NAME;
+import static com.pmmp.config.rabbitmq.RabbitMQConfig.RETRY_QUEUE_NAME;
+import static com.pmmp.config.rabbitmq.RabbitMQConfig.RETRY_ROUTING_KEY;
+import static com.pmmp.listener.model.QueueMessage.UPLOAD_SAT_FILE;
+import static com.pmmp.model.enums.SatFileStatus.PENDING;
 import static org.apache.tomcat.util.codec.binary.Base64.isBase64;
 
 @Service
 public class SalesService {
 
     private final SatFileRepository satFileRepository;
-    private final RabbitTemplate rabbitTemplate;
+    private final QueueMessageService queueMessageService;
 
     private final String applicationName;
 
     public SalesService(final SatFileRepository satFileRepository,
-                        final RabbitTemplate rabbitTemplate,
+                        final QueueMessageService queueMessageService,
                         @Value("accounting-api") final String applicationName) {
 
         this.satFileRepository = satFileRepository;
-        this.rabbitTemplate = rabbitTemplate;
+        this.queueMessageService = queueMessageService;
         this.applicationName = applicationName;
     }
 
@@ -49,38 +52,35 @@ public class SalesService {
                     .build();
         }
 
+        final String fileExtension = FilenameUtils.getExtension(fileName);
         final byte[] fileContent = Base64.getDecoder().decode(file);
 
         final SatFile satFile = SatFile.builder()
                 .id(UUID.randomUUID())
-                .name(fileName)
-                .type(documentTypeSlug.name())
+                .fileName(fileName)
+                .extension(fileExtension)
+                .type(documentTypeSlug)
                 .file(fileContent)
+                .status(PENDING)
                 .build();
 
         satFileRepository.save(satFile);
 
         final UploadSatFileRequestMessage uploadSatFileRequestMessage = UploadSatFileRequestMessage.builder()
                 .uuid(UUID.randomUUID())
+                .action(UPLOAD_SAT_FILE)
                 .source(applicationName)
                 .satFileId(satFile.getId())
                 .build();
 
         try {
-            rabbitTemplate.convertAndSend(EXCHANGE_NAME, ROUTING_KEY, uploadSatFileRequestMessage);
+            queueMessageService.convertAndSend(RETRY_EXCHANGE_NAME, RETRY_ROUTING_KEY, uploadSatFileRequestMessage);
 
         } catch (final DestinationResolutionException exception) {
             throw ConfigurationException.builder()
                     .message("The queue for accounting-api does not exists.")
-                    .addAdditionalInformation("accountingQueueName", QUEUE_NAME)
+                    .addAdditionalInformation("accountingQueueName", RETRY_QUEUE_NAME)
                     .build();
         }
-
-        //TODO: Crear campo status en tabla sat_files
-        //TODO: Crear configuracion en redis, la idea es que al subir el archivo, el procesamiento debe ser async
-        //      en esta parte se guarda el sat_file en la tabla y se publica en el canal de redis el ID generado
-        //      agregar un listener que se suscriba al canal de redis y procese todos los archivos que lleguen
-
-
     }
 }

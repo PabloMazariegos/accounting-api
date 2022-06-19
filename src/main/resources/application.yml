@@ -1,14 +1,14 @@
 server:
-  port: 5000
   servlet:
     context-path: /accounting
+  port: 5000
 
 spring:
   application:
     name: accounting-api
   jpa:
     database: postgresql
-    show-sql: true
+    show-sql: false
     open-in-view: false
     hibernate:
       ddl-auto: validate
@@ -20,5 +20,11 @@ spring:
   rabbitmq:
     host: localhost
     port: 5672
-
-
+    listener:
+      simple:
+        retry:
+          enabled: true
+          initial-interval: 3s
+          max-attempts: 3
+          max-interval: 10s
+          multiplier: 1

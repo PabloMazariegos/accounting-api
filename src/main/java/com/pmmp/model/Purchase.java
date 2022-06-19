@@ -1,7 +1,7 @@
 package com.pmmp.model;
 
+import lombok.Builder;
 import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.UUID;
 
 @Entity
+@Builder
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "purchases")
 public class Purchase {
@@ -54,8 +55,6 @@ public class Purchase {
     private SatFile satFile;
 
     @Basic(optional = false)
-    @Column(updatable = false)
-    @CreatedDate
     private Date createdAt;
 
     @Basic(optional = false)

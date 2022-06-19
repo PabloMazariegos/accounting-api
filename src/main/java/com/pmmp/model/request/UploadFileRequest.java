@@ -1,6 +1,6 @@
-package com.pmmp.sales.model.request;
+package com.pmmp.model.request;
 
-import com.pmmp.sales.enums.DocumentType;
+import com.pmmp.model.enums.DocumentType;
 import lombok.Getter;
 import lombok.Setter;
 

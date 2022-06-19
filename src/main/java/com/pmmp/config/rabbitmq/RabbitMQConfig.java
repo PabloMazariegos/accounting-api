@@ -15,47 +15,48 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQConfig {
 
-    public static final String RETRY_QUEUE_NAME = "r-accounting-queue";
-    public static final String DEAD_QUEUE_NAME = "d-accounting-queue";
-
-    public static final String RETRY_EXCHANGE_NAME = "r-accounting-exchange";
-    public static final String DEAD_EXCHANGE_NAME = "d-accounting-exchange";
-
-    public static final String RETRY_ROUTING_KEY = "r-accounting_message";
-    public static final String DEAD_ROUTING_KEY = "d-accounting_message";
-
-
     @Bean
-    public DirectExchange retryExchange() {
-        return new DirectExchange(RETRY_EXCHANGE_NAME);
+    public DirectExchange retryExchange(final RabbitMQProperties properties) {
+        final String retryExchangeName = properties.getExchange().getRetry();
+        return new DirectExchange(retryExchangeName);
     }
 
     @Bean
-    public DirectExchange deadLetterExchange() {
-        return new DirectExchange(DEAD_EXCHANGE_NAME);
+    public DirectExchange deadLetterExchange(final RabbitMQProperties properties) {
+        final String deadExchangeName = properties.getExchange().getDead();
+
+        return new DirectExchange(deadExchangeName);
     }
 
     @Bean
-    public Queue deadLetterQueue() {
-        return QueueBuilder.durable(DEAD_QUEUE_NAME).build();
+    public Queue deadLetterQueue(final RabbitMQProperties properties) {
+        final String deadQueueName = properties.getQueue().getDead();
+
+        return QueueBuilder.durable(deadQueueName).build();
     }
 
     @Bean
-    public Queue retryableQueue() {
-        return QueueBuilder.durable(RETRY_QUEUE_NAME)
-                .withArgument("x-dead-letter-exchange", DEAD_EXCHANGE_NAME)
-                .withArgument("x-dead-letter-routing-key", DEAD_ROUTING_KEY)
+    public Queue retryableQueue(final RabbitMQProperties properties) {
+        final String retryQueueName = properties.getQueue().getRetry();
+        final String deadExchangeName = properties.getExchange().getDead();
+        final String deadRoutingName = properties.getRouting().getDead();
+
+        return QueueBuilder.durable(retryQueueName)
+                .withArgument("x-dead-letter-exchange", deadExchangeName)
+                .withArgument("x-dead-letter-routing-key", deadRoutingName)
                 .build();
     }
 
     @Bean
-    public Binding deadLetterBinding() {
-        return BindingBuilder.bind(deadLetterQueue()).to(deadLetterExchange()).with(DEAD_ROUTING_KEY);
+    public Binding deadLetterBinding(final RabbitMQProperties properties) {
+        final String deadRoutingName = properties.getRouting().getDead();
+        return BindingBuilder.bind(deadLetterQueue(properties)).to(deadLetterExchange(properties)).with(deadRoutingName);
     }
 
     @Bean
-    public Binding retryBinding() {
-        return BindingBuilder.bind(retryableQueue()).to(retryExchange()).with(RETRY_ROUTING_KEY);
+    public Binding retryBinding(final RabbitMQProperties properties) {
+        final String retryRoutingName = properties.getRouting().getRetry();
+        return BindingBuilder.bind(retryableQueue(properties)).to(retryExchange(properties)).with(retryRoutingName);
     }
 
     @Bean

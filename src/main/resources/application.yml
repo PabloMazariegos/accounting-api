@@ -4,6 +4,8 @@ server:
   port: 5000
 
 spring:
+  profiles:
+    active: ${ACTIVE_PROFILE}
   application:
     name: accounting-api
   jpa:
@@ -12,10 +14,16 @@ spring:
     open-in-view: false
     hibernate:
       ddl-auto: validate
+
+---
+spring:
+  config:
+    activate:
+      on-profile: develop
   datasource:
-    url: ${DATABASE_URL}
-    username: ${DATABASE_USERNAME}
-    password: ${DATABASE_PASSWORD}
+    url: jdbc:postgresql://localhost:5432/accounting
+    username: postgres
+    password: $Egurid@d20
     driver-class-name: org.postgresql.Driver
   rabbitmq:
     host: localhost
@@ -24,7 +32,42 @@ spring:
       simple:
         retry:
           enabled: true
-          initial-interval: 3s
-          max-attempts: 3
-          max-interval: 10s
-          multiplier: 1
+rabbitmq.properties:
+  queue:
+    retry: r-accounting-queue.dev
+    dead: d-accounting-queue.dev
+  exchange:
+    retry: r-accounting-exchange.dev
+    dead: d-accounting-exchange.dev
+  routing:
+    retry: r-accounting-routing.dev
+    dead: d-accounting-routing.dev
+
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url: jdbc:postgresql://localhost:5432/accounting_prod
+    username: postgres
+    password: $Egurid@d20
+    driver-class-name: org.postgresql.Driver
+  rabbitmq:
+    host: localhost
+    port: 5672
+    listener:
+      simple:
+        retry:
+          enabled: true
+rabbitmq.properties:
+  queue:
+    retry: r-accounting-queue.prod
+    dead: d-accounting-queue.prod
+  exchange:
+    retry: r-accounting-exchange.prod
+    dead: d-accounting-exchange.prod
+  routing:
+    retry: r-accounting-routing.prod
+    dead: d-accounting-routing.prod

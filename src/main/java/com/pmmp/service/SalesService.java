@@ -1,5 +1,6 @@
 package com.pmmp.service;
 
+import com.pmmp.config.rabbitmq.RabbitMQProperties;
 import com.pmmp.exception.impl.ConfigurationException;
 import com.pmmp.exception.impl.InternalServiceException;
 import com.pmmp.listener.model.UploadSatFileRequestMessage;
@@ -16,9 +17,6 @@ import javax.transaction.Transactional;
 import java.util.Base64;
 import java.util.UUID;
 
-import static com.pmmp.config.rabbitmq.RabbitMQConfig.RETRY_EXCHANGE_NAME;
-import static com.pmmp.config.rabbitmq.RabbitMQConfig.RETRY_QUEUE_NAME;
-import static com.pmmp.config.rabbitmq.RabbitMQConfig.RETRY_ROUTING_KEY;
 import static com.pmmp.listener.model.QueueMessage.UPLOAD_SAT_FILE;
 import static com.pmmp.model.enums.SatFileStatus.PENDING;
 import static org.apache.tomcat.util.codec.binary.Base64.isBase64;
@@ -28,15 +26,17 @@ public class SalesService {
 
     private final SatFileRepository satFileRepository;
     private final QueueMessageService queueMessageService;
+    private final RabbitMQProperties rabbitProperties;
 
     private final String applicationName;
 
     public SalesService(final SatFileRepository satFileRepository,
                         final QueueMessageService queueMessageService,
-                        @Value("accounting-api") final String applicationName) {
+                        RabbitMQProperties rabbitMQProperties, @Value("accounting-api") final String applicationName) {
 
         this.satFileRepository = satFileRepository;
         this.queueMessageService = queueMessageService;
+        this.rabbitProperties = rabbitMQProperties;
         this.applicationName = applicationName;
     }
 
@@ -74,12 +74,15 @@ public class SalesService {
                 .build();
 
         try {
-            queueMessageService.convertAndSend(RETRY_EXCHANGE_NAME, RETRY_ROUTING_KEY, uploadSatFileRequestMessage);
+            queueMessageService.convertAndSend(
+                    rabbitProperties.getExchange().getRetry(),
+                    rabbitProperties.getRouting().getRetry(),
+                    uploadSatFileRequestMessage);
 
         } catch (final DestinationResolutionException exception) {
             throw ConfigurationException.builder()
                     .message("The queue for accounting-api does not exists.")
-                    .addAdditionalInformation("accountingQueueName", RETRY_QUEUE_NAME)
+                    .addAdditionalInformation("accountingQueueName", rabbitProperties.getQueue().getRetry())
                     .build();
         }
     }

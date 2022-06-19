@@ -9,8 +9,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
-import static com.pmmp.config.rabbitmq.RabbitMQConfig.RETRY_QUEUE_NAME;
-
 @Slf4j
 @Component
 public class QueueListener {
@@ -20,17 +18,17 @@ public class QueueListener {
         this.queueMessageService = queueMessageService;
     }
 
-    @RabbitListener(queues = RETRY_QUEUE_NAME)
+    @RabbitListener(queues = "#{rabbitmq.queue.retry}")
     public void consumeMessage(final QueueMessage queueMessage) {
         final UUID uuid = queueMessage.getUuid();
         final String action = queueMessage.getAction();
         try {
             queueMessage.accept(queueMessageService);
         } catch (final AbstractServiceException exception) {
-            log.error("The queue '" + RETRY_QUEUE_NAME + "' has thrown a for the message with uuid '" + uuid + "'.", exception);
+            log.error("The queue has thrown a for the message with uuid '" + uuid + "'.", exception);
             throw exception;
         } catch (final Exception exception) {
-            log.error("The queue '" + RETRY_QUEUE_NAME + "' has thrown a exception for the message with uuid '" + uuid + "'.", exception);
+            log.error("The queue has thrown a exception for the message with uuid '" + uuid + "'.", exception);
             throw exception;
         }
     }

@@ -1,5 +1,7 @@
 package com.pmmp.model;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.Basic;
@@ -12,6 +14,8 @@ import java.util.UUID;
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "taxes_configuration")
+@Getter
+@Setter
 public class TaxConfiguration {
     @Id
     private UUID id;

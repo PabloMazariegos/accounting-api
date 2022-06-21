@@ -27,17 +27,21 @@ public class SalesService {
     private final SatFileRepository satFileRepository;
     private final QueueMessageService queueMessageService;
     private final RabbitMQProperties rabbitProperties;
-
     private final String applicationName;
+
+    private final TaxConfigurationService taxConfigurationService;
 
     public SalesService(final SatFileRepository satFileRepository,
                         final QueueMessageService queueMessageService,
-                        RabbitMQProperties rabbitMQProperties, @Value("accounting-api") final String applicationName) {
+                        final RabbitMQProperties rabbitMQProperties,
+                        final TaxConfigurationService taxConfigurationService,
+                        @Value("accounting-api") final String applicationName) {
 
         this.satFileRepository = satFileRepository;
         this.queueMessageService = queueMessageService;
         this.rabbitProperties = rabbitMQProperties;
         this.applicationName = applicationName;
+        this.taxConfigurationService = taxConfigurationService;
     }
 
     @Transactional

@@ -8,7 +8,6 @@ import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.util.NumberToTextConverter;
 import org.springframework.stereotype.Service;
 
@@ -26,19 +25,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static java.math.RoundingMode.UP;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static org.apache.logging.log4j.util.Strings.isBlank;
 
 @Service
 public class ProcessSatFileService {
-    private static final String FILE_DATE_FORMAT = "yyyy-mm-dd HH:mm:ss";
 
     private final SaleRepository salesRepository;
+    private final TaxConfigurationService taxConfigurationService;
 
-    public ProcessSatFileService(final SaleRepository salesRepository) {
+    public ProcessSatFileService(final SaleRepository salesRepository,
+                                 final TaxConfigurationService taxConfigurationService) {
         this.salesRepository = salesRepository;
+        this.taxConfigurationService = taxConfigurationService;
     }
 
     public ProcessSatFileResource processSales(final SatFile incomingSatFile) {
@@ -53,15 +53,8 @@ public class ProcessSatFileService {
             final HSSFRow headerRow = sheet.getRow(0);
 
             if (nonNull(headerRow)) {
-                final short minColIdx = headerRow.getFirstCellNum();
-                final short maxColIdx = headerRow.getLastCellNum();
 
-                //TODO: Wrap in a separate function
-                final Map<String, Integer> map = new HashMap<>();
-                for (int idx = minColIdx; idx < maxColIdx; idx++) {
-                    final HSSFCell cell = headerRow.getCell(idx);
-                    map.put(cell.getStringCellValue(), cell.getColumnIndex());
-                }
+                final Map<String, Integer> columnsMapping = getFileColumnsMapping(headerRow);
 
                 final int totalRows = sheet.getPhysicalNumberOfRows();
                 HSSFRow dataRow;
@@ -73,64 +66,9 @@ public class ProcessSatFileService {
                         continue;
                     }
 
-                    //TODO: Wrap in a separate function that return the converted type values
-                    final String documentNumber = getCellValue(dataRow.getCell(map.get("Número de Autorización")));
-                    final String serial = getCellValue(dataRow.getCell(map.get("Serie")));
-                    final String invoiceNumber = getCellValue(dataRow.getCell(map.get("Número del DTE")));
-                    final String nit = getCellValue(dataRow.getCell(map.get("ID del receptor")));
-                    final String clientName = getCellValue(dataRow.getCell(map.get("Nombre completo del receptor")));
-                    final String amount = getCellValue(dataRow.getCell(map.get("Monto (Gran Total)")));
-                    final String ivaAmount = getCellValue(dataRow.getCell(map.get("IVA (monto de este impuesto)")));
-                    final String createdAt = getCellValue(dataRow.getCell(map.get("Fecha de emisión")));
-
-                    UUID convertedDocumentNumber = null;
-                    BigDecimal convertedAmount = null;
-                    BigDecimal convertedIva = null;
-                    Date convertedDate = null;
-                    BigDecimal isrAmount = new BigDecimal("0.00");
-
-                    if (!isBlank(documentNumber)) {
-                        convertedDocumentNumber = UUID.fromString(documentNumber);
-                    }
-
-                    if (!isBlank(amount)) {
-
-                        convertedAmount = new BigDecimal(amount).setScale(2, UP);
-
-                        //TODO: Configure ISR_TAX, IVA_TAX & TAX_PRECISION in table taxes_configurations
-                        //TODO: Create a service for calculate the taxes
-                        final BigDecimal isrTax = new BigDecimal("0.05");
-                        final BigDecimal ivaTax = new BigDecimal("1.12");
-
-                        final BigDecimal amountWithoutIva = convertedAmount.divide(ivaTax, 2, UP);
-                        isrAmount = amountWithoutIva.multiply(isrTax).setScale(2, UP);
-                    }
-
-                    if (!isBlank(ivaAmount)) {
-                        convertedIva = new BigDecimal(ivaAmount);
-                    }
-
-                    if (!isBlank(createdAt)) {
-                        final LocalDateTime localDateTime = LocalDateTime.parse(createdAt, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-                        convertedDate = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
-                    }
-
-                    final Sale newSale = Sale.builder()
-                            .id(UUID.randomUUID())
-                            .documentNumber(convertedDocumentNumber)
-                            .serial(serial)
-                            .number(invoiceNumber)
-                            .nit(nit)
-                            .clientName(clientName)
-                            .amount(convertedAmount)
-                            .ivaAmount(convertedIva)
-                            .isrAmount(isrAmount)
-                            .registerType("UPLOADED")
-                            .satFile(incomingSatFile)
-                            .createdAt(convertedDate)
-                            .build();
-
-                    salesList.add(newSale);
+                    final Sale saleFromFileRow = getSaleFromFileRow(dataRow, columnsMapping);
+                    saleFromFileRow.setSatFile(incomingSatFile);
+                    salesList.add(saleFromFileRow);
                 }
 
                 //TODO: validate if another sale does not have the same document_number uuid
@@ -151,7 +89,94 @@ public class ProcessSatFileService {
         return ProcessSatFileResource.builder().build();
     }
 
-    private String getCellValue(final Cell cell) {
+    private Map<String, Integer> getFileColumnsMapping(final HSSFRow headerRow) {
+        final short minColIdx = headerRow.getFirstCellNum();
+        final short maxColIdx = headerRow.getLastCellNum();
+
+        final Map<String, Integer> columnsMapping = new HashMap<>();
+        for (int idx = minColIdx; idx < maxColIdx; idx++) {
+            final HSSFCell cell = headerRow.getCell(idx);
+            columnsMapping.put(cell.getStringCellValue(), cell.getColumnIndex());
+        }
+
+        return columnsMapping;
+    }
+
+    public Sale getSaleFromFileRow(final HSSFRow fileRow, final Map<String, Integer> columns) {
+
+        final String documentNumber = getCellValue(fileRow, columns, "Número de Autorización");
+        final String serial = getCellValue(fileRow, columns, "Serie");
+        final String invoiceNumber = getCellValue(fileRow, columns, "Número del DTE");
+        final String nit = getCellValue(fileRow, columns, "ID del receptor");
+        final String clientName = getCellValue(fileRow, columns, "Nombre completo del receptor");
+        final String amount = getCellValue(fileRow, columns, "Monto (Gran Total)");
+        final String ivaAmount = getCellValue(fileRow, columns, "IVA (monto de este impuesto)");
+        final String createdAt = getCellValue(fileRow, columns, "Fecha de emisión");
+
+        final UUID convertedDocumentNumber = convertDocumentNumber(documentNumber);
+        final BigDecimal convertedAmount = convertBigDecimalWithTaxConfiguration(amount);
+        final BigDecimal convertedIvaAmount = convertBigDecimal(ivaAmount);
+        final BigDecimal isrAmount = getIsrAmount(convertedIvaAmount);
+        final Date convertedCreatedAt = convertCreatedAt(createdAt);
+
+        return Sale.builder()
+                .id(UUID.randomUUID())
+                .documentNumber(convertedDocumentNumber)
+                .serial(serial)
+                .number(invoiceNumber)
+                .nit(nit)
+                .clientName(clientName)
+                .amount(convertedAmount)
+                .ivaAmount(convertedIvaAmount)
+                .isrAmount(isrAmount)
+                .registerType("UPLOADED")
+                .createdAt(convertedCreatedAt)
+                .build();
+    }
+
+    private Date convertCreatedAt(final String fileCreatedAt) {
+        if (!isBlank(fileCreatedAt)) {
+            final LocalDateTime localDateTime = LocalDateTime.parse(fileCreatedAt, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+            return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+        }
+        return null;
+    }
+
+    private BigDecimal getIsrAmount(final BigDecimal ivaAmount) {
+        if (nonNull(ivaAmount)) {
+            return taxConfigurationService.getCalculatedIsr(ivaAmount);
+        }
+        return null;
+    }
+
+    private BigDecimal convertBigDecimal(String fileAmount) {
+        if (!isBlank(fileAmount)) {
+            return new BigDecimal(fileAmount);
+        }
+        return null;
+    }
+
+    private BigDecimal convertBigDecimalWithTaxConfiguration(String fileAmount) {
+        if (!isBlank(fileAmount)) {
+            return taxConfigurationService.convertToBigDecimalWithTaxConfiguration(fileAmount);
+        }
+        return null;
+    }
+
+    private UUID convertDocumentNumber(final String fileDocumentNumber) {
+        if (!isBlank(fileDocumentNumber)) {
+            return UUID.fromString(fileDocumentNumber);
+        }
+        return null;
+    }
+
+    private String getCellValue(final HSSFRow fileRow,
+                                final Map<String, Integer> columns,
+                                final String columnName) {
+
+        final Integer columnNumber = columns.get(columnName);
+        final HSSFCell cell = fileRow.getCell(columnNumber);
+
         switch (cell.getCellType()) {
             case NUMERIC:
                 return NumberToTextConverter.toText(cell.getNumericCellValue());

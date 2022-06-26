@@ -1,47 +1,41 @@
-package com.pmmp.service;
+package com.pmmp.service.satfiles;
 
 import com.pmmp.model.Sale;
 import com.pmmp.model.SatFile;
 import com.pmmp.model.resource.ProcessSatFileResource;
 import com.pmmp.repository.SaleRepository;
-import org.apache.poi.hssf.usermodel.HSSFCell;
+import com.pmmp.service.TaxConfigurationService;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.util.NumberToTextConverter;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.pmmp.model.enums.RegisterType.UPLOADED;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static org.apache.logging.log4j.util.Strings.isBlank;
 
 @Service
-public class ProcessSatFileService {
+public class SalesFileService extends AbstractSatFilesService {
 
     private final SaleRepository salesRepository;
-    private final TaxConfigurationService taxConfigurationService;
 
-    public ProcessSatFileService(final SaleRepository salesRepository,
-                                 final TaxConfigurationService taxConfigurationService) {
+    public SalesFileService(final SaleRepository salesRepository,
+                            final TaxConfigurationService taxConfigurationService) {
+        super(taxConfigurationService);
         this.salesRepository = salesRepository;
-        this.taxConfigurationService = taxConfigurationService;
     }
 
-    public ProcessSatFileResource processSales(final SatFile incomingSatFile) {
+    public ProcessSatFileResource process(final SatFile incomingSatFile) {
         final List<Sale> salesList = new ArrayList<>();
         final byte[] file = incomingSatFile.getFile();
 
@@ -71,7 +65,6 @@ public class ProcessSatFileService {
                     salesList.add(saleFromFileRow);
                 }
 
-                //TODO: validate if another sale does not have the same document_number uuid
                 salesRepository.saveAll(salesList);
             }
 
@@ -83,23 +76,6 @@ public class ProcessSatFileService {
             throw new RuntimeException("The file could not be read", exception);
         }
 
-    }
-
-    public ProcessSatFileResource processPurchases(final SatFile incomingSatFile) {
-        return ProcessSatFileResource.builder().build();
-    }
-
-    private Map<String, Integer> getFileColumnsMapping(final HSSFRow headerRow) {
-        final short minColIdx = headerRow.getFirstCellNum();
-        final short maxColIdx = headerRow.getLastCellNum();
-
-        final Map<String, Integer> columnsMapping = new HashMap<>();
-        for (int idx = minColIdx; idx < maxColIdx; idx++) {
-            final HSSFCell cell = headerRow.getCell(idx);
-            columnsMapping.put(cell.getStringCellValue(), cell.getColumnIndex());
-        }
-
-        return columnsMapping;
     }
 
     public Sale getSaleFromFileRow(final HSSFRow fileRow, final Map<String, Integer> columns) {
@@ -129,61 +105,8 @@ public class ProcessSatFileService {
                 .amount(convertedAmount)
                 .ivaAmount(convertedIvaAmount)
                 .isrAmount(isrAmount)
-                .registerType("UPLOADED")
+                .registerType(UPLOADED)
                 .createdAt(convertedCreatedAt)
                 .build();
-    }
-
-    private Date convertCreatedAt(final String fileCreatedAt) {
-        if (!isBlank(fileCreatedAt)) {
-            final LocalDateTime localDateTime = LocalDateTime.parse(fileCreatedAt, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-            return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
-        }
-        return null;
-    }
-
-    private BigDecimal getIsrAmount(final BigDecimal ivaAmount) {
-        if (nonNull(ivaAmount)) {
-            return taxConfigurationService.getCalculatedIsr(ivaAmount);
-        }
-        return null;
-    }
-
-    private BigDecimal convertBigDecimal(String fileAmount) {
-        if (!isBlank(fileAmount)) {
-            return new BigDecimal(fileAmount);
-        }
-        return null;
-    }
-
-    private BigDecimal convertBigDecimalWithTaxConfiguration(String fileAmount) {
-        if (!isBlank(fileAmount)) {
-            return taxConfigurationService.convertToBigDecimalWithTaxConfiguration(fileAmount);
-        }
-        return null;
-    }
-
-    private UUID convertDocumentNumber(final String fileDocumentNumber) {
-        if (!isBlank(fileDocumentNumber)) {
-            return UUID.fromString(fileDocumentNumber);
-        }
-        return null;
-    }
-
-    private String getCellValue(final HSSFRow fileRow,
-                                final Map<String, Integer> columns,
-                                final String columnName) {
-
-        final Integer columnNumber = columns.get(columnName);
-        final HSSFCell cell = fileRow.getCell(columnNumber);
-
-        switch (cell.getCellType()) {
-            case NUMERIC:
-                return NumberToTextConverter.toText(cell.getNumericCellValue());
-            case STRING:
-                return cell.getStringCellValue();
-            default:
-                return null;
-        }
     }
 }

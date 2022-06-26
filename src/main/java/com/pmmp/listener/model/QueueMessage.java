@@ -24,7 +24,6 @@ public abstract class QueueMessage implements Serializable {
 
     private UUID uuid;
     protected String action;
-    protected String source;
 
     public abstract void accept(QueueMessageService visitor);
 }

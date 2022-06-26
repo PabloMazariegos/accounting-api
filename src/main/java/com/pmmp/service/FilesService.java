@@ -9,7 +9,6 @@ import com.pmmp.model.SatFile;
 import com.pmmp.model.enums.DocumentType;
 import com.pmmp.repository.SatFileRepository;
 import org.apache.commons.io.FilenameUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.core.DestinationResolutionException;
 import org.springframework.stereotype.Service;
 
@@ -22,26 +21,19 @@ import static com.pmmp.model.enums.SatFileStatus.PENDING;
 import static org.apache.tomcat.util.codec.binary.Base64.isBase64;
 
 @Service
-public class SalesService {
+public class FilesService {
 
     private final SatFileRepository satFileRepository;
     private final QueueMessageService queueMessageService;
     private final RabbitMQProperties rabbitProperties;
-    private final String applicationName;
 
-    private final TaxConfigurationService taxConfigurationService;
-
-    public SalesService(final SatFileRepository satFileRepository,
+    public FilesService(final SatFileRepository satFileRepository,
                         final QueueMessageService queueMessageService,
-                        final RabbitMQProperties rabbitMQProperties,
-                        final TaxConfigurationService taxConfigurationService,
-                        @Value("accounting-api") final String applicationName) {
+                        final RabbitMQProperties rabbitMQProperties) {
 
         this.satFileRepository = satFileRepository;
         this.queueMessageService = queueMessageService;
         this.rabbitProperties = rabbitMQProperties;
-        this.applicationName = applicationName;
-        this.taxConfigurationService = taxConfigurationService;
     }
 
     @Transactional
@@ -73,7 +65,6 @@ public class SalesService {
         final UploadSatFileRequestMessage uploadSatFileRequestMessage = UploadSatFileRequestMessage.builder()
                 .uuid(UUID.randomUUID())
                 .action(UPLOAD_SAT_FILE)
-                .source(applicationName)
                 .satFileId(satFile.getId())
                 .build();
 

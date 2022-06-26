@@ -7,7 +7,8 @@ import com.pmmp.model.SatFile;
 import com.pmmp.model.enums.DocumentType;
 import com.pmmp.model.resource.ProcessSatFileResource;
 import com.pmmp.repository.SatFileRepository;
-import com.pmmp.service.ProcessSatFileService;
+import com.pmmp.service.satfiles.PurchaseFileService;
+import com.pmmp.service.satfiles.SalesFileService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -21,12 +22,15 @@ import static java.util.Objects.nonNull;
 @Slf4j
 public class UploadSatFileMessageService {
     private final SatFileRepository satFileRepository;
-    private final ProcessSatFileService processSatFileService;
+    private final SalesFileService processSalesFileService;
+    private final PurchaseFileService processPurchaseFileService;
 
     public UploadSatFileMessageService(final SatFileRepository satFileRepository,
-                                       final ProcessSatFileService processSatFileService) {
+                                       final SalesFileService processSalesFileService,
+                                       final PurchaseFileService processPurchaseFileService) {
         this.satFileRepository = satFileRepository;
-        this.processSatFileService = processSatFileService;
+        this.processSalesFileService = processSalesFileService;
+        this.processPurchaseFileService = processPurchaseFileService;
     }
 
     public void process(final UploadSatFileMessage uploadSatFileMessage) {
@@ -51,10 +55,10 @@ public class UploadSatFileMessageService {
 
         switch (incomingSatFileType) {
             case SALES_SAT_FILE:
-                fileProcessComplete = processSatFileService.processSales(incomingSatFile);
+                fileProcessComplete = processSalesFileService.process(incomingSatFile);
                 break;
             case PURCHASES_SAT_FILE:
-                fileProcessComplete = processSatFileService.processPurchases(incomingSatFile);
+                fileProcessComplete = processPurchaseFileService.process(incomingSatFile);
                 break;
             default:
                 throw InternalServiceException.builder()

@@ -17,6 +17,8 @@ CREATE TABLE "sales"(
 );
 ALTER TABLE
     "sales" ADD PRIMARY KEY("id");
+
+
 CREATE TABLE "taxes_configuration"(
     "id" UUID NOT NULL,
     "slug" VARCHAR(255) NOT NULL,
@@ -26,18 +28,24 @@ ALTER TABLE
     "taxes_configuration" ADD PRIMARY KEY("id");
 ALTER TABLE
     "taxes_configuration" ADD CONSTRAINT "taxes_configuration_slug_unique" UNIQUE("slug");
-CREATE TABLE "sat_files"(
-    "id" UUID NOT NULL,
-    "name" VARCHAR(255) NOT NULL,
-    "type" VARCHAR(255) NOT NULL,
-    "file" bytea NOT NULL,
+
+
+CREATE TABLE "sat_files"
+(
+    "id"          UUID         NOT NULL,
+    "name"        VARCHAR(255) NOT NULL,
+    "type"        VARCHAR(255) NOT NULL,
+    "file"        bytea        NOT NULL,
+    "status"      VARCHAR(64)  NOT NULL,
     "uploaded_at" TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL,
     "uploaded_by" VARCHAR(255) NOT NULL,
-    "updated_at" TIMESTAMP(0) WITHOUT TIME ZONE NULL,
-    "updated_by" VARCHAR(255) NULL
+    "updated_at"  TIMESTAMP(0) WITHOUT TIME ZONE NULL,
+    "updated_by"  VARCHAR(255) NULL
 );
 ALTER TABLE
     "sat_files" ADD PRIMARY KEY("id");
+
+
 CREATE TABLE "purchases"(
     "id" UUID NOT NULL,
     "document_type" VARCHAR(255) NOT NULL,
@@ -56,6 +64,8 @@ CREATE TABLE "purchases"(
 );
 ALTER TABLE
     "purchases" ADD PRIMARY KEY("id");
+
+
 CREATE TABLE "tax_forms"(
     "id" UUID NOT NULL,
     "number" BIGINT NOT NULL,
@@ -69,6 +79,8 @@ CREATE TABLE "tax_forms"(
 );
 ALTER TABLE
     "tax_forms" ADD PRIMARY KEY("id");
+
+
 CREATE TABLE "isr_annual_integration"(
     "id" UUID NOT NULL,
     "isr_calculated" DECIMAL(8, 2) NOT NULL,

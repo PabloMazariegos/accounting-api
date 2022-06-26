@@ -1,5 +1,7 @@
 package com.pmmp.model;
 
+import com.pmmp.model.enums.DocumentType;
+import com.pmmp.model.enums.SatFileStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,14 +14,17 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.Basic;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import java.util.Date;
 import java.util.UUID;
 
+import static javax.persistence.EnumType.STRING;
 import static javax.persistence.TemporalType.TIMESTAMP;
 
 @Getter
@@ -35,20 +40,30 @@ public class SatFile {
     private UUID id;
 
     @Basic(optional = false)
-    private String name;
+    private String fileName;
 
     @Basic(optional = false)
-    private String type;
+    private String extension;
+
+    @Basic(optional = false)
+    @Enumerated(STRING)
+    private DocumentType type;
 
     @Basic(optional = false)
     private byte[] file;
 
+    @Basic(optional = false)
+    @Enumerated(STRING)
+    private SatFileStatus status;
+
     @CreatedDate
     @Temporal(TIMESTAMP)
-    private Date uploadedAt;
+    @Column(updatable = false)
+    private Date createdAt;
 
     @CreatedBy
-    private String uploadedBy;
+    @Column(updatable = false)
+    private String createdBy;
 
     @LastModifiedDate
     @Temporal(TIMESTAMP)

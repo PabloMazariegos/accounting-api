@@ -1,4 +1,4 @@
-package com.pmmp.sales.enums;
+package com.pmmp.model.enums;
 
 public enum DocumentType {
     SALES_SAT_FILE,

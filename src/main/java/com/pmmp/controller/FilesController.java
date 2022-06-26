@@ -1,7 +1,7 @@
-package com.pmmp.sales.controller;
+package com.pmmp.controller;
 
-import com.pmmp.sales.model.request.UploadFileRequest;
-import com.pmmp.sales.service.SalesService;
+import com.pmmp.model.request.UploadFileRequest;
+import com.pmmp.service.FilesService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,22 +10,22 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
-import static org.springframework.http.HttpStatus.NO_CONTENT;
+import static org.springframework.http.HttpStatus.OK;
 
 @RestController
-@RequestMapping(value = "/v1/sales")
-public class SalesController {
-    private final SalesService salesService;
+@RequestMapping(value = "/v1/files")
+public class FilesController {
+    private final FilesService filesService;
 
-    public SalesController(final SalesService salesService1) {
-        this.salesService = salesService1;
+    public FilesController(final FilesService filesService1) {
+        this.filesService = filesService1;
     }
 
     @PostMapping(value = "/upload")
-    @ResponseStatus(NO_CONTENT)
-    public void uploadSalesFile(@RequestBody @Valid UploadFileRequest uploadFileRequest) {
+    @ResponseStatus(OK)
+    public void uploadFiles(@RequestBody @Valid UploadFileRequest uploadFileRequest) {
 
-        salesService.processFile(
+        filesService.processFile(
                 uploadFileRequest.getFile(),
                 uploadFileRequest.getFileName(),
                 uploadFileRequest.getDocumentTypeSlug()

@@ -1,7 +1,12 @@
 package com.pmmp.model;
 
+import com.pmmp.model.enums.RegisterType;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -10,6 +15,7 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -18,7 +24,14 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.UUID;
 
+import static javax.persistence.EnumType.STRING;
+
 @Entity
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "purchases")
 public class Purchase {
@@ -47,15 +60,14 @@ public class Purchase {
     private BigDecimal ivaAmount;
 
     @Basic(optional = false)
-    private String registerType;
+    @Enumerated(STRING)
+    private RegisterType registerType;
 
     @JoinColumn(name = "sat_file_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private SatFile satFile;
 
     @Basic(optional = false)
-    @Column(updatable = false)
-    @CreatedDate
     private Date createdAt;
 
     @Basic(optional = false)

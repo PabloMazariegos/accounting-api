@@ -32,6 +32,9 @@ spring:
       simple:
         retry:
           enabled: true
+  data:
+    rest:
+      default-media-type: application/json
 rabbitmq.properties:
   queue:
     retry: r-accounting-queue.dev
@@ -61,6 +64,9 @@ spring:
       simple:
         retry:
           enabled: true
+  data:
+    rest:
+      default-media-type: application/json
 rabbitmq.properties:
   queue:
     retry: r-accounting-queue.prod

@@ -2,6 +2,7 @@ package com.pmmp.controller;
 
 import com.pmmp.assembler.SaleResourceModelAssembler;
 import com.pmmp.model.Sale;
+import com.pmmp.model.enums.RegisterType;
 import com.pmmp.model.resource.SaleResourceModel;
 import com.pmmp.service.SaleService;
 import org.springframework.data.domain.Page;
@@ -16,7 +17,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.util.Date;
+import java.util.UUID;
 
 import static org.springframework.data.domain.Sort.Direction.DESC;
 import static org.springframework.format.annotation.DateTimeFormat.ISO.DATE;
@@ -37,10 +40,18 @@ public class SalesController {
     @ResponseStatus(OK)
     public PagedModel<SaleResourceModel> getSales(@RequestParam(value = "from_date") @DateTimeFormat(iso = DATE) Date fromDate,
                                                   @RequestParam(value = "to_date") @DateTimeFormat(iso = DATE) Date toDate,
+                                                  @RequestParam(value = "document_number", required = false) String documentNumber,
+                                                  @RequestParam(value = "serial", required = false) String serial,
+                                                  @RequestParam(value = "number", required = false) String number,
+                                                  @RequestParam(value = "nit", required = false) String nit,
+                                                  @RequestParam(value = "client_name", required = false) String clientName,
+                                                  @RequestParam(value = "amount", required = false) BigDecimal amount,
+                                                  @RequestParam(value = "register_type", required = false) RegisterType registerType,
+                                                  @RequestParam(value = "sat_file_id", required = false) UUID satFileId,
                                                   @SortDefault(sort = "createdAt", direction = DESC) final Pageable pageable,
                                                   final PagedResourcesAssembler<Sale> assembler) {
 
-        final Page<Sale> sales = saleService.getSales(fromDate, toDate, pageable);
+        final Page<Sale> sales = saleService.getSales(fromDate, toDate, documentNumber, serial, number, nit, clientName, amount, registerType, satFileId, pageable);
 
         return assembler.toModel(sales, saleResourceModelAssembler);
 

@@ -1,6 +1,6 @@
 package com.pmmp.repository.specification;
 
-import com.pmmp.model.Sale;
+import com.pmmp.model.Purchase;
 import com.pmmp.model.enums.RegisterType;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -17,43 +17,48 @@ import java.util.UUID;
 import static java.util.Objects.nonNull;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
-public class SaleSpecification implements Specification<Sale> {
+public class PurchaseSpecification implements Specification<Purchase> {
     private final Date fromDate;
     private final Date toDate;
     private final String documentNumber;
+    private final String documentType;
     private final String serial;
-    private final String number;
+    private final String invoiceNumber;
     private final String nit;
     private final String clientName;
     private final BigDecimal amount;
+    private final BigDecimal ivaAmount;
     private final RegisterType registerType;
     private final UUID satFileId;
 
-    public SaleSpecification(final Date fromDate,
-                             final Date toDate,
-                             final String documentNumber,
-                             final String serial,
-                             final String number,
-                             final String nit,
-                             final String clientName,
-                             final BigDecimal amount,
-                             final RegisterType registerType,
-                             final UUID satFileId) {
-
+    public PurchaseSpecification(final Date fromDate,
+                                 final Date toDate,
+                                 final String documentNumber,
+                                 final String documentType,
+                                 final String serial,
+                                 final String invoiceNumber,
+                                 final String nit,
+                                 final String clientName,
+                                 final BigDecimal amount,
+                                 final BigDecimal ivaAmount,
+                                 final RegisterType registerType,
+                                 final UUID satFileId) {
         this.fromDate = fromDate;
         this.toDate = toDate;
         this.documentNumber = documentNumber;
+        this.documentType = documentType;
         this.serial = serial;
-        this.number = number;
+        this.invoiceNumber = invoiceNumber;
         this.nit = nit;
         this.clientName = clientName;
         this.amount = amount;
+        this.ivaAmount = ivaAmount;
         this.registerType = registerType;
         this.satFileId = satFileId;
     }
 
     @Override
-    public Predicate toPredicate(Root<Sale> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+    public Predicate toPredicate(Root<Purchase> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
         final List<Predicate> predicates = new ArrayList<>();
 
         if (nonNull(fromDate)) {
@@ -64,16 +69,20 @@ public class SaleSpecification implements Specification<Sale> {
             predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("createdAt"), toDate));
         }
 
-        if (isNotBlank(documentNumber)) {
-            predicates.add(criteriaBuilder.like(root.get("documentNumber").as(String.class), "%" + documentNumber + "%"));
+        if (nonNull(documentNumber)) {
+            predicates.add(criteriaBuilder.like(root.get("id").as(String.class), "%" + documentNumber + "%"));
+        }
+
+        if (isNotBlank(documentType)) {
+            predicates.add(criteriaBuilder.like(root.get("documentType"), "%" + documentType + "%"));
         }
 
         if (isNotBlank(serial)) {
             predicates.add(criteriaBuilder.like(root.get("serial"), "%" + serial + "%"));
         }
 
-        if (isNotBlank(number)) {
-            predicates.add(criteriaBuilder.like(root.get("number"), "%" + number + "%"));
+        if (isNotBlank(invoiceNumber)) {
+            predicates.add(criteriaBuilder.like(root.get("invoiceNumber"), "%" + invoiceNumber + "%"));
         }
 
         if (isNotBlank(nit)) {
@@ -88,6 +97,10 @@ public class SaleSpecification implements Specification<Sale> {
             predicates.add(criteriaBuilder.like(root.get("amount").as(String.class), "%" + amount + "%"));
         }
 
+        if (nonNull(ivaAmount)) {
+            predicates.add(criteriaBuilder.like(root.get("ivaAmount").as(String.class), "%" + ivaAmount + "%"));
+        }
+
         if (nonNull(registerType)) {
             predicates.add(criteriaBuilder.equal(root.get("registerType"), registerType));
         }
@@ -96,6 +109,6 @@ public class SaleSpecification implements Specification<Sale> {
             predicates.add(criteriaBuilder.equal(root.get("satFile").get("id"), satFileId));
         }
 
-        return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        return criteriaBuilder.and(predicates.toArray(predicates.toArray(new Predicate[0])));
     }
 }

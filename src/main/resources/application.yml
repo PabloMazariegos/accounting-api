@@ -22,8 +22,8 @@ spring:
       on-profile: develop
   datasource:
     url: ${DATABASE_URL}
-    username: ${DB_USER}
-    password: ${DB_PASSWORD}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
     driver-class-name: org.postgresql.Driver
   rabbitmq:
     host: localhost
@@ -54,8 +54,8 @@ spring:
       on-profile: prod
   datasource:
     url: ${DATABASE_URL}
-    username: ${DB_USER}
-    password: ${DB_PASSWORD}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
     driver-class-name: org.postgresql.Driver
   rabbitmq:
     host: localhost

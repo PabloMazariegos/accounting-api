@@ -21,9 +21,9 @@ spring:
     activate:
       on-profile: develop
   datasource:
-    url: jdbc:postgresql://localhost:5432/accounting
-    username: postgres
-    password: $Egurid@d20
+    url: ${DATABASE_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
   rabbitmq:
     host: localhost
@@ -53,7 +53,7 @@ spring:
     activate:
       on-profile: prod
   datasource:
-    url: jdbc:postgresql://localhost:5432/accounting_prod
+    url: ${DATABASE_URL}
     username: ${DB_USER}
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver

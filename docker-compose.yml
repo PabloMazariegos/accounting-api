@@ -7,9 +7,9 @@ services:
       - "5000:5000"
     environment:
       - DATABASE_PASSWORD=$$Egurid@d20
-      - DATABASE_URL=jdbc:postgresql://host.docker.internal:5432/accounting
+      - DATABASE_URL=jdbc:postgresql://host.docker.internal:5432/accounting_prod
       - DATABASE_USERNAME=postgres
-      - ACTIVE_PROFILE=prod
+      - ACTIVE_PROFILE=develop
 
   rabbitmq:
     image: rabbitmq:3.9.11-management-alpine

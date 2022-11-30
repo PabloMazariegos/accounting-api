@@ -10,6 +10,7 @@ services:
       - DATABASE_URL=jdbc:postgresql://host.docker.internal:5432/accounting_prod
       - DATABASE_USERNAME=postgres
       - ACTIVE_PROFILE=prod
+      - RABBITMQ_URL=host.docker.internal
 
   rabbitmq:
     image: rabbitmq:3.9.11-management-alpine

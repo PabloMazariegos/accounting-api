@@ -9,7 +9,7 @@ services:
       - DATABASE_PASSWORD=$$Egurid@d20
       - DATABASE_URL=jdbc:postgresql://host.docker.internal:5432/accounting_prod
       - DATABASE_USERNAME=postgres
-      - ACTIVE_PROFILE=develop
+      - ACTIVE_PROFILE=prod
 
   rabbitmq:
     image: rabbitmq:3.9.11-management-alpine

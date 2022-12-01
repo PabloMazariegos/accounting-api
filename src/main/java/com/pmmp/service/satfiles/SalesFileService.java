@@ -80,20 +80,21 @@ public class SalesFileService extends AbstractSatFilesService {
 
     public Sale getSaleFromFileRow(final HSSFRow fileRow, final Map<String, Integer> columns) {
 
-        final String documentNumber = getCellValue(fileRow, columns, "Número de Autorización");
+        final String documentNumber = getCellValue(fileRow, columns, "NÃºmero de AutorizaciÃ³n");
         final String serial = getCellValue(fileRow, columns, "Serie");
-        final String invoiceNumber = getCellValue(fileRow, columns, "Número del DTE");
+        final String invoiceNumber = getCellValue(fileRow, columns, "NÃºmero del DTE");
         final String nit = getCellValue(fileRow, columns, "ID del receptor");
         final String clientName = getCellValue(fileRow, columns, "Nombre completo del receptor");
         final String amount = getCellValue(fileRow, columns, "Monto (Gran Total)");
         final String ivaAmount = getCellValue(fileRow, columns, "IVA (monto de este impuesto)");
-        final String createdAt = getCellValue(fileRow, columns, "Fecha de emisión");
+        final String createdAt = getCellValue(fileRow, columns, "Fecha de emisiÃ³n");
 
         final UUID convertedDocumentNumber = convertDocumentNumber(documentNumber);
         final BigDecimal convertedAmount = convertBigDecimalWithTaxConfiguration(amount);
         final BigDecimal convertedIvaAmount = convertBigDecimal(ivaAmount);
         final BigDecimal isrAmount = getIsrAmount(convertedIvaAmount);
         final Date convertedCreatedAt = convertCreatedAt(createdAt);
+        final BigDecimal amountWithoutIva = convertedAmount.subtract(convertedIvaAmount);
 
         return Sale.builder()
                 .id(UUID.randomUUID())
@@ -104,6 +105,7 @@ public class SalesFileService extends AbstractSatFilesService {
                 .clientName(clientName)
                 .amount(convertedAmount)
                 .ivaAmount(convertedIvaAmount)
+                .amountWithoutIva(amountWithoutIva)
                 .isrAmount(isrAmount)
                 .registerType(UPLOADED)
                 .createdAt(convertedCreatedAt)

@@ -60,6 +60,9 @@ public class Purchase {
     private BigDecimal ivaAmount;
 
     @Basic(optional = false)
+    private BigDecimal amountWithoutIva;
+
+    @Basic(optional = false)
     @Enumerated(STRING)
     private RegisterType registerType;
 

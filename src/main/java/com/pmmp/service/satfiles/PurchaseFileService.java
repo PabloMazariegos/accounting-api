@@ -80,12 +80,12 @@ public class PurchaseFileService extends AbstractSatFilesService {
     public Purchase getPurchaseFromFileRow(final HSSFRow fileRow, final Map<String, Integer> columns) {
         final String documentType = getCellValue(fileRow, columns, "Tipo de DTE (nombre)");
         final String serial = getCellValue(fileRow, columns, "Serie");
-        final String invoiceNumber = getCellValue(fileRow, columns, "Número del DTE");
+        final String invoiceNumber = getCellValue(fileRow, columns, "NÃºmero del DTE");
         final String nit = getCellValue(fileRow, columns, "NIT del emisor");
         final String clientName = getCellValue(fileRow, columns, "Nombre completo del emisor");
         final String amount = getCellValue(fileRow, columns, "Monto (Gran Total)");
         final String ivaAmount = getCellValue(fileRow, columns, "IVA (monto de este impuesto)");
-        final String createdAt = getCellValue(fileRow, columns, "Fecha de emisión");
+        final String createdAt = getCellValue(fileRow, columns, "Fecha de emisiÃ³n");
 
         final BigDecimal convertedAmount = convertBigDecimalWithTaxConfiguration(amount);
         final BigDecimal convertedIvaAmount = convertBigDecimal(ivaAmount);

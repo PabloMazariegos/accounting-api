@@ -90,6 +90,7 @@ public class PurchaseFileService extends AbstractSatFilesService {
         final BigDecimal convertedAmount = convertBigDecimalWithTaxConfiguration(amount);
         final BigDecimal convertedIvaAmount = convertBigDecimal(ivaAmount);
         final Date convertedCreatedAt = convertCreatedAt(createdAt);
+        final BigDecimal amountWithoutIva = convertedAmount.subtract(convertedIvaAmount);
 
         return Purchase.builder()
                 .id(UUID.randomUUID())
@@ -100,6 +101,7 @@ public class PurchaseFileService extends AbstractSatFilesService {
                 .clientName(clientName)
                 .amount(convertedAmount)
                 .ivaAmount(convertedIvaAmount)
+                .amountWithoutIva(amountWithoutIva)
                 .registerType(UPLOADED)
                 .createdAt(convertedCreatedAt)
                 .build();

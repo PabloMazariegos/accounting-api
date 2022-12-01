@@ -59,6 +59,9 @@ public class Sale {
     private BigDecimal ivaAmount;
 
     @Basic(optional = false)
+    private BigDecimal amountWithoutIva;
+
+    @Basic(optional = false)
     private BigDecimal isrAmount;
 
     @Basic(optional = false)

@@ -94,6 +94,7 @@ public class SalesFileService extends AbstractSatFilesService {
         final BigDecimal convertedIvaAmount = convertBigDecimal(ivaAmount);
         final BigDecimal isrAmount = getIsrAmount(convertedIvaAmount);
         final Date convertedCreatedAt = convertCreatedAt(createdAt);
+        final BigDecimal amountWithoutIva = convertedAmount.subtract(convertedIvaAmount);
 
         return Sale.builder()
                 .id(UUID.randomUUID())
@@ -104,6 +105,7 @@ public class SalesFileService extends AbstractSatFilesService {
                 .clientName(clientName)
                 .amount(convertedAmount)
                 .ivaAmount(convertedIvaAmount)
+                .amountWithoutIva(amountWithoutIva)
                 .isrAmount(isrAmount)
                 .registerType(UPLOADED)
                 .createdAt(convertedCreatedAt)

@@ -80,14 +80,14 @@ public class SalesFileService extends AbstractSatFilesService {
 
     public Sale getSaleFromFileRow(final HSSFRow fileRow, final Map<String, Integer> columns) {
 
-        final String documentNumber = getCellValue(fileRow, columns, "NÃºmero de AutorizaciÃ³n");
-        final String serial = getCellValue(fileRow, columns, "Serie");
-        final String invoiceNumber = getCellValue(fileRow, columns, "NÃºmero del DTE");
-        final String nit = getCellValue(fileRow, columns, "ID del receptor");
-        final String clientName = getCellValue(fileRow, columns, "Nombre completo del receptor");
-        final String amount = getCellValue(fileRow, columns, "Monto (Gran Total)");
-        final String ivaAmount = getCellValue(fileRow, columns, "IVA (monto de este impuesto)");
-        final String createdAt = getCellValue(fileRow, columns, "Fecha de emisiÃ³n");
+        final String documentNumber = getCellValue(fileRow, columns, "numero de autorizacion");
+        final String serial = getCellValue(fileRow, columns, "serie");
+        final String invoiceNumber = getCellValue(fileRow, columns, "numero del dte");
+        final String nit = getCellValue(fileRow, columns, "id del receptor");
+        final String clientName = getCellValue(fileRow, columns, "nombre completo del receptor");
+        final String amount = getCellValue(fileRow, columns, "monto (gran total)");
+        final String ivaAmount = getCellValue(fileRow, columns, "iva (monto de este impuesto)");
+        final String createdAt = getCellValue(fileRow, columns, "fecha de emision");
 
         final UUID convertedDocumentNumber = convertDocumentNumber(documentNumber);
         final BigDecimal convertedAmount = convertBigDecimalWithTaxConfiguration(amount);

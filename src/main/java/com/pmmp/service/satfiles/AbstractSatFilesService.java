@@ -1,6 +1,7 @@
 package com.pmmp.service.satfiles;
 
 import com.pmmp.service.TaxConfigurationService;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.ss.util.NumberToTextConverter;
@@ -33,7 +34,10 @@ public abstract class AbstractSatFilesService {
         final Map<String, Integer> columnsMapping = new HashMap<>();
         for (int idx = minColIdx; idx < maxColIdx; idx++) {
             final HSSFCell cell = headerRow.getCell(idx);
-            columnsMapping.put(cell.getStringCellValue(), cell.getColumnIndex());
+            String columnName = cell.getStringCellValue();
+            String normalizedColumnName = StringUtils.stripAccents(columnName);
+
+            columnsMapping.put(normalizedColumnName.toLowerCase(), cell.getColumnIndex());
         }
 
         return columnsMapping;

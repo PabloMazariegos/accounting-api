@@ -1,8 +1,8 @@
-package com.pmmp.listener.service;
+package com.pmmp.service;
 
 import com.pmmp.exception.impl.InternalServiceException;
 import com.pmmp.exception.impl.ResourceNotFoundException;
-import com.pmmp.listener.model.UploadSatFileMessage;
+import com.pmmp.model.request.UploadSatFileRequestMessage;
 import com.pmmp.model.SatFile;
 import com.pmmp.model.enums.DocumentType;
 import com.pmmp.model.resource.ProcessSatFileResource;
@@ -33,8 +33,8 @@ public class UploadSatFileMessageService {
         this.processPurchaseFileService = processPurchaseFileService;
     }
 
-    public void process(final UploadSatFileMessage uploadSatFileMessage) {
-        log.info("Message with id {} receive successfully", uploadSatFileMessage.getSatFileId());
+    public void process(final UploadSatFileRequestMessage uploadSatFileMessage) {
+        log.info("Sat file to process: {}", uploadSatFileMessage.getSatFileId());
 
         final UUID incomingSatFileId = uploadSatFileMessage.getSatFileId();
 

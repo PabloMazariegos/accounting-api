@@ -1,4 +1,4 @@
-package com.pmmp.listener.model;
+package com.pmmp.model.request;
 
 import lombok.Builder;
 import lombok.Getter;

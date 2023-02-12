@@ -6,17 +6,9 @@ services:
     ports:
       - "5000:5000"
     environment:
-      - DATABASE_PASSWORD=$$Egurid@d20
-      - DATABASE_URL=jdbc:postgresql://host.docker.internal:5432/accounting_prod
+      - DATABASE_PASSWORD=PabloM17$
+      - DATABASE_URL=jdbc:postgresql://host.docker.internal:5432
       - DATABASE_USERNAME=postgres
       - ACTIVE_PROFILE=prod
-      - RABBITMQ_URL=host.docker.internal
-
-  rabbitmq:
-    image: rabbitmq:3.9.11-management-alpine
-    container_name: rabbitmq-container
-    ports:
-      - "5672:5672"
-      - "15672:15672"
 
 

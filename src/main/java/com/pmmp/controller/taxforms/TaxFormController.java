@@ -1,6 +1,7 @@
 package com.pmmp.controller.taxforms;
 
 import com.pmmp.controller.taxforms.assembler.TaxFormResourceAssembler;
+import com.pmmp.controller.taxforms.request.CreateTaxFormRequest;
 import com.pmmp.controller.taxforms.resource.TaxFormResourceModel;
 import com.pmmp.controller.taxforms.service.TaxFormService;
 import com.pmmp.model.TaxForm;
@@ -12,11 +13,13 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Date;
 import java.util.UUID;
 
 import static org.springframework.data.domain.Sort.Direction.DESC;
 import static org.springframework.format.annotation.DateTimeFormat.ISO.DATE;
+import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
@@ -43,5 +46,11 @@ public class TaxFormController {
                                                         final PagedResourcesAssembler<TaxForm> assembler){
         Page<TaxForm> taxForms = taxFormService.getTaxForms(fromDate, toDate, number, accessNumber, type, id, pageable);
         return assembler.toModel(taxForms, taxFormResourceAssembler);
+    }
+
+    @PostMapping
+    @ResponseStatus(CREATED)
+    public void createTaxForm(@Valid @RequestBody final CreateTaxFormRequest createTaxFormRequest){
+        taxFormService.createTaxForm(createTaxFormRequest);
     }
 }

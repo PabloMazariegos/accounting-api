@@ -1,10 +1,10 @@
-package com.pmmp.controller;
+package com.pmmp.controller.sales;
 
-import com.pmmp.assembler.SaleResourceModelAssembler;
+import com.pmmp.controller.sales.assembler.SaleResourceModelAssembler;
 import com.pmmp.model.Sale;
 import com.pmmp.model.enums.RegisterType;
-import com.pmmp.model.resource.SaleResourceModel;
-import com.pmmp.service.SaleService;
+import com.pmmp.controller.sales.resource.SaleResourceModel;
+import com.pmmp.controller.sales.service.SaleService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;

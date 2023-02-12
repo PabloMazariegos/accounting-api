@@ -1,10 +1,10 @@
-package com.pmmp.controller;
+package com.pmmp.controller.purchases;
 
-import com.pmmp.assembler.PurchaseResourceModelAssembler;
+import com.pmmp.controller.purchases.assembler.PurchaseResourceModelAssembler;
 import com.pmmp.model.Purchase;
 import com.pmmp.model.enums.RegisterType;
-import com.pmmp.model.resource.PurchaseResourceModel;
-import com.pmmp.service.PurchaseService;
+import com.pmmp.controller.purchases.resource.PurchaseResourceModel;
+import com.pmmp.controller.purchases.service.PurchaseService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;

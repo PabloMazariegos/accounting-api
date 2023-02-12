@@ -1,4 +1,4 @@
-package com.pmmp.model.request;
+package com.pmmp.controller.files.request;
 
 import com.pmmp.model.enums.DocumentType;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package com.pmmp.service;
+package com.pmmp.controller.purchases.service;
 
 import com.pmmp.model.Purchase;
 import com.pmmp.model.enums.RegisterType;

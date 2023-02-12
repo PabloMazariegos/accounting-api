@@ -1,4 +1,4 @@
-package com.pmmp.model.resource;
+package com.pmmp.controller.files.resource;
 
 import lombok.Builder;
 import lombok.Getter;

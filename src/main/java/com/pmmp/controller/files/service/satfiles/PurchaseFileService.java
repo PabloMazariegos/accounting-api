@@ -1,8 +1,8 @@
-package com.pmmp.service.satfiles;
+package com.pmmp.controller.files.service.satfiles;
 
 import com.pmmp.model.Purchase;
 import com.pmmp.model.SatFile;
-import com.pmmp.model.resource.ProcessSatFileResource;
+import com.pmmp.controller.files.resource.ProcessSatFileResource;
 import com.pmmp.repository.PurchaseRepository;
 import com.pmmp.service.TaxConfigurationService;
 import org.apache.poi.hssf.usermodel.HSSFRow;

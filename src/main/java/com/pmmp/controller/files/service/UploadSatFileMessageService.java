@@ -1,14 +1,14 @@
-package com.pmmp.service;
+package com.pmmp.controller.files.service;
 
+import com.pmmp.controller.files.service.satfiles.PurchaseFileService;
+import com.pmmp.controller.files.service.satfiles.SalesFileService;
 import com.pmmp.exception.impl.InternalServiceException;
 import com.pmmp.exception.impl.ResourceNotFoundException;
-import com.pmmp.model.request.UploadSatFileRequestMessage;
+import com.pmmp.controller.files.request.UploadSatFileRequestMessage;
 import com.pmmp.model.SatFile;
 import com.pmmp.model.enums.DocumentType;
-import com.pmmp.model.resource.ProcessSatFileResource;
+import com.pmmp.controller.files.resource.ProcessSatFileResource;
 import com.pmmp.repository.SatFileRepository;
-import com.pmmp.service.satfiles.PurchaseFileService;
-import com.pmmp.service.satfiles.SalesFileService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 

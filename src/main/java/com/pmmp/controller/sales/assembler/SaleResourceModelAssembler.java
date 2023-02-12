@@ -1,7 +1,7 @@
-package com.pmmp.assembler;
+package com.pmmp.controller.sales.assembler;
 
 import com.pmmp.model.Sale;
-import com.pmmp.model.resource.SaleResourceModel;
+import com.pmmp.controller.sales.resource.SaleResourceModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.stereotype.Component;
 

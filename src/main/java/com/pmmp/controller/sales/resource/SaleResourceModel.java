@@ -1,4 +1,4 @@
-package com.pmmp.model.resource;
+package com.pmmp.controller.sales.resource;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.pmmp.model.enums.RegisterType;

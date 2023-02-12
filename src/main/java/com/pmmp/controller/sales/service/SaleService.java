@@ -1,4 +1,4 @@
-package com.pmmp.service;
+package com.pmmp.controller.sales.service;
 
 import com.pmmp.model.Sale;
 import com.pmmp.model.enums.RegisterType;

@@ -1,4 +1,4 @@
-package com.pmmp.service.satfiles;
+package com.pmmp.controller.files.service.satfiles;
 
 import com.pmmp.service.TaxConfigurationService;
 import org.apache.commons.lang3.StringUtils;

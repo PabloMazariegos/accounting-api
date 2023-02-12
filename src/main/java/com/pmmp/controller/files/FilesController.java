@@ -1,7 +1,7 @@
-package com.pmmp.controller;
+package com.pmmp.controller.files;
 
-import com.pmmp.model.request.UploadFileRequest;
-import com.pmmp.service.FilesService;
+import com.pmmp.controller.files.request.UploadFileRequest;
+import com.pmmp.controller.files.service.FilesService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,8 +17,8 @@ import static org.springframework.http.HttpStatus.OK;
 public class FilesController {
     private final FilesService filesService;
 
-    public FilesController(final FilesService filesService1) {
-        this.filesService = filesService1;
+    public FilesController(final FilesService filesService) {
+        this.filesService = filesService;
     }
 
     @PostMapping(value = "/upload")

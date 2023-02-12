@@ -32,8 +32,6 @@ public class TaxForm {
     @Basic(optional = false)
     private String type;
 
-    private BigDecimal amount;
-
     @Basic(optional = false)
     @Column(updatable = false)
     @CreatedDate

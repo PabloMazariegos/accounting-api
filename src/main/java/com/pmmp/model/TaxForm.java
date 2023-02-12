@@ -28,10 +28,10 @@ public class TaxForm {
     private UUID id;
 
     @Basic(optional = false)
-    private Long number;
+    private String number;
 
     @Basic(optional = false)
-    private Long accessNumber;
+    private String accessNumber;
 
     @Basic(optional = false)
     private String type;

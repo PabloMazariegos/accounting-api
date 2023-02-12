@@ -20,8 +20,8 @@ public class TaxFormService {
 
     public Page<TaxForm> getTaxForms(final Date fromDate,
                                      final Date toDate,
-                                     final Long number,
-                                     final Long accessNumber,
+                                     final String number,
+                                     final String accessNumber,
                                      final String type,
                                      final UUID id,
                                      final Pageable pageable) {

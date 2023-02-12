@@ -35,8 +35,8 @@ public class TaxFormController {
     @ResponseStatus(OK)
     public PagedModel<TaxFormResourceModel> getTaxForms(@RequestParam(value = "from_date") @DateTimeFormat(iso = DATE) Date fromDate,
                                                         @RequestParam(value = "to_date") @DateTimeFormat(iso = DATE) Date toDate,
-                                                        @RequestParam(value = "number", required = false) Long number,
-                                                        @RequestParam(value = "access_number", required = false) Long accessNumber,
+                                                        @RequestParam(value = "number", required = false) String number,
+                                                        @RequestParam(value = "access_number", required = false) String accessNumber,
                                                         @RequestParam(value = "type", required = false) String type,
                                                         @RequestParam(value = "id", required = false) UUID id,
                                                         @SortDefault(sort = "createdAt", direction = DESC) final Pageable pageable,

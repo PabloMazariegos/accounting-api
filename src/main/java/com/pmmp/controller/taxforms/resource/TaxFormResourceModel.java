@@ -17,8 +17,8 @@ import java.util.UUID;
 @Relation(collectionRelation = "tax_forms", itemRelation = "tax_form")
 public class TaxFormResourceModel extends RepresentationModel<TaxFormResourceModel> {
     private UUID id;
-    private Long number;
-    private Long accessNumber;
+    private String number;
+    private String accessNumber;
     private String type;
     private Date createdAt;
 }

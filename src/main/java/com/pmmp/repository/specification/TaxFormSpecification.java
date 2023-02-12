@@ -21,15 +21,15 @@ public class TaxFormSpecification implements Specification<TaxForm> {
     private final Date fromDate;
     private final Date toDate;
     private final UUID id;
-    private final Long number;
-    private final Long accessNumber;
+    private final String number;
+    private final String accessNumber;
     private final String type;
 
     public TaxFormSpecification(final Date fromDate,
                                 final Date toDate,
                                 final UUID id,
-                                final Long number,
-                                final Long accessNumber,
+                                final String number,
+                                final String accessNumber,
                                 final String type) {
         this.id = id;
         this.number = number;
@@ -55,12 +55,12 @@ public class TaxFormSpecification implements Specification<TaxForm> {
             predicates.add(criteriaBuilder.like(root.get("id").as(String.class), "%" + id + "%"));
         }
 
-        if (nonNull(number)) {
-            predicates.add(criteriaBuilder.like(root.get("number").as(String.class), "%" + number + "%"));
+        if (isNotBlank(number)) {
+            predicates.add(criteriaBuilder.like(root.get("number"), "%" + number + "%"));
         }
 
-        if (nonNull(accessNumber)) {
-            predicates.add(criteriaBuilder.like(root.get("accessNumber").as(String.class), "%" + accessNumber + "%"));
+        if (isNotBlank(accessNumber)) {
+            predicates.add(criteriaBuilder.like(root.get("accessNumber"), "%" + accessNumber + "%"));
         }
 
         if (isNotBlank(type)) {

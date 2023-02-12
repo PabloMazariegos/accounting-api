@@ -1,5 +1,7 @@
 package com.pmmp.model;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -16,6 +18,8 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.UUID;
 
+@Getter
+@Setter
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "tax_forms")

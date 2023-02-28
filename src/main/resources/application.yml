@@ -9,7 +9,6 @@ spring:
   application:
     name: accounting-api
   jpa:
-    database: postgresql
     show-sql: false
     open-in-view: false
     hibernate:
@@ -21,30 +20,13 @@ spring:
     activate:
       on-profile: develop
   datasource:
-    url: ${DATABASE_URL}
+    url: ${DATABASE_URL}/accounting_dev
     username: ${DATABASE_USERNAME}
     password: ${DATABASE_PASSWORD}
     driver-class-name: org.postgresql.Driver
-  rabbitmq:
-    host: ${RABBITMQ_URL}
-    port: 5672
-    listener:
-      simple:
-        retry:
-          enabled: true
   data:
     rest:
       default-media-type: application/json
-rabbitmq.properties:
-  queue:
-    retry: r-accounting-queue.dev
-    dead: d-accounting-queue.dev
-  exchange:
-    retry: r-accounting-exchange.dev
-    dead: d-accounting-exchange.dev
-  routing:
-    retry: r-accounting-routing.dev
-    dead: d-accounting-routing.dev
 
 
 ---
@@ -53,27 +35,10 @@ spring:
     activate:
       on-profile: prod
   datasource:
-    url: ${DATABASE_URL}
+    url: ${DATABASE_URL}/accounting_prod
     username: ${DATABASE_USERNAME}
     password: ${DATABASE_PASSWORD}
     driver-class-name: org.postgresql.Driver
-  rabbitmq:
-    host: ${RABBITMQ_URL}
-    port: 5672
-    listener:
-      simple:
-        retry:
-          enabled: true
   data:
     rest:
       default-media-type: application/json
-rabbitmq.properties:
-  queue:
-    retry: r-accounting-queue.prod
-    dead: d-accounting-queue.prod
-  exchange:
-    retry: r-accounting-exchange.prod
-    dead: d-accounting-exchange.prod
-  routing:
-    retry: r-accounting-routing.prod
-    dead: d-accounting-routing.prod

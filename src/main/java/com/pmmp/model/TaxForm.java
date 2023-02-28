@@ -1,5 +1,6 @@
 package com.pmmp.model;
 
+import lombok.*;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -16,23 +17,26 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.UUID;
 
+@Getter
+@Setter
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "tax_forms")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class TaxForm {
     @Id
     private UUID id;
 
     @Basic(optional = false)
-    private Long number;
+    private String number;
 
     @Basic(optional = false)
-    private Long accessNumber;
+    private String accessNumber;
 
     @Basic(optional = false)
     private String type;
-
-    private BigDecimal amount;
 
     @Basic(optional = false)
     @Column(updatable = false)

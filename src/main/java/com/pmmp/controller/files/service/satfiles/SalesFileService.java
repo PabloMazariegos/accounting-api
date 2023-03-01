@@ -3,6 +3,7 @@ package com.pmmp.controller.files.service.satfiles;
 import com.pmmp.model.Sale;
 import com.pmmp.model.SatFile;
 import com.pmmp.controller.files.resource.ProcessSatFileResource;
+import com.pmmp.model.enums.InvoiceStatus;
 import com.pmmp.repository.SaleRepository;
 import com.pmmp.service.TaxConfigurationService;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -88,13 +89,17 @@ public class SalesFileService extends AbstractSatFilesService {
         final String amount = getCellValue(fileRow, columns, "monto (gran total)");
         final String ivaAmount = getCellValue(fileRow, columns, "iva (monto de este impuesto)");
         final String createdAt = getCellValue(fileRow, columns, "fecha de emision");
+        final String status = getCellValue(fileRow, columns, "estado");
+        final String voidedAt = getCellValue(fileRow, columns, "fecha de anulacion");
 
         final UUID convertedDocumentNumber = convertDocumentNumber(documentNumber);
         final BigDecimal convertedAmount = convertBigDecimalWithTaxConfiguration(amount);
         final BigDecimal convertedIvaAmount = convertBigDecimal(ivaAmount);
         final BigDecimal isrAmount = getIsrAmount(convertedIvaAmount);
-        final Date convertedCreatedAt = convertCreatedAt(createdAt);
+        final Date convertedCreatedAt = convertToDateWithoutTimeZone(createdAt);
         final BigDecimal amountWithoutIva = convertedAmount.subtract(convertedIvaAmount);
+        final Date convertedVoidedAt = convertToDateWithoutTimeZone(voidedAt);
+        final InvoiceStatus invoiceStatus = convertToInvoiceStatus(status);
 
         return Sale.builder()
                 .id(UUID.randomUUID())
@@ -108,6 +113,8 @@ public class SalesFileService extends AbstractSatFilesService {
                 .amountWithoutIva(amountWithoutIva)
                 .isrAmount(isrAmount)
                 .registerType(UPLOADED)
+                .status(invoiceStatus)
+                .voidedAt(convertedVoidedAt)
                 .createdAt(convertedCreatedAt)
                 .build();
     }

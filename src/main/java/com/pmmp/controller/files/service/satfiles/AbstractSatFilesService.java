@@ -1,5 +1,6 @@
 package com.pmmp.controller.files.service.satfiles;
 
+import com.pmmp.model.enums.InvoiceStatus;
 import com.pmmp.service.TaxConfigurationService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -20,7 +21,7 @@ import static java.util.Objects.nonNull;
 import static org.apache.logging.log4j.util.Strings.isBlank;
 
 public abstract class AbstractSatFilesService {
-
+    private static final String ACTIVE_FILE_STATUS_SLUG = "vigente";
     private final TaxConfigurationService taxConfigurationService;
 
     protected AbstractSatFilesService(final TaxConfigurationService taxConfigurationService) {
@@ -43,13 +44,13 @@ public abstract class AbstractSatFilesService {
         return columnsMapping;
     }
 
-    protected Date convertCreatedAt(final String fileCreatedAt) {
-        if (!isBlank(fileCreatedAt)) {
+    protected Date convertToDateWithoutTimeZone(final String fileDate) {
+        if (!isBlank(fileDate)) {
             LocalDateTime localDateTime;
             try {
-                localDateTime = LocalDateTime.parse(fileCreatedAt, ISO_OFFSET_DATE_TIME);
+                localDateTime = LocalDateTime.parse(fileDate, ISO_OFFSET_DATE_TIME);
             } catch (final Exception exception) {
-                localDateTime = LocalDateTime.parse(fileCreatedAt, ISO_DATE_TIME);
+                localDateTime = LocalDateTime.parse(fileDate, ISO_DATE_TIME);
             }
 
             return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
@@ -99,6 +100,16 @@ public abstract class AbstractSatFilesService {
                 return cell.getStringCellValue();
             default:
                 return null;
+        }
+    }
+
+    protected InvoiceStatus convertToInvoiceStatus(final String status){
+        final String statusToLowerCase = status.toLowerCase();
+
+        if(statusToLowerCase.equals(ACTIVE_FILE_STATUS_SLUG)){
+            return InvoiceStatus.ACTIVE;
+        }else{
+            return InvoiceStatus.VOIDED;
         }
     }
 }

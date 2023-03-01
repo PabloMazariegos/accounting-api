@@ -1,6 +1,7 @@
 package com.pmmp.repository.specification;
 
 import com.pmmp.model.Sale;
+import com.pmmp.model.enums.InvoiceStatus;
 import com.pmmp.model.enums.RegisterType;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -28,6 +29,7 @@ public class SaleSpecification implements Specification<Sale> {
     private final BigDecimal amount;
     private final RegisterType registerType;
     private final UUID satFileId;
+    private final InvoiceStatus status;
 
     public SaleSpecification(final Date fromDate,
                              final Date toDate,
@@ -38,7 +40,8 @@ public class SaleSpecification implements Specification<Sale> {
                              final String clientName,
                              final BigDecimal amount,
                              final RegisterType registerType,
-                             final UUID satFileId) {
+                             final UUID satFileId,
+                             final InvoiceStatus status) {
 
         this.fromDate = fromDate;
         this.toDate = toDate;
@@ -50,6 +53,7 @@ public class SaleSpecification implements Specification<Sale> {
         this.amount = amount;
         this.registerType = registerType;
         this.satFileId = satFileId;
+        this.status = status;
     }
 
     @Override
@@ -94,6 +98,10 @@ public class SaleSpecification implements Specification<Sale> {
 
         if (nonNull(satFileId)) {
             predicates.add(criteriaBuilder.equal(root.get("satFile").get("id"), satFileId));
+        }
+
+        if(nonNull(status)){
+            predicates.add(criteriaBuilder.equal(root.get("status"), status));
         }
 
         return criteriaBuilder.and(predicates.toArray(new Predicate[0]));

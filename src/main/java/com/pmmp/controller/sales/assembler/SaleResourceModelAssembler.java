@@ -17,11 +17,14 @@ public class SaleResourceModelAssembler implements RepresentationModelAssembler<
                 .number(source.getNumber())
                 .nit(source.getNit())
                 .clientName(source.getClientName())
+                .amountWithoutIva(source.getAmountWithoutIva())
                 .amount(source.getAmount())
                 .ivaAmount(source.getIvaAmount())
                 .isrAmount(source.getIsrAmount())
                 .registerType(source.getRegisterType())
                 .satFileId(source.getSatFile().getId())
+                .status(source.getStatus())
+                .voidedAt(source.getVoidedAt())
                 .createdAt(source.getCreatedAt())
                 .build();
     }

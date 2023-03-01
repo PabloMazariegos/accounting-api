@@ -1,5 +1,6 @@
 package com.pmmp.model;
 
+import com.pmmp.model.enums.InvoiceStatus;
 import com.pmmp.model.enums.RegisterType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -69,6 +70,11 @@ public class Purchase {
     @JoinColumn(name = "sat_file_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private SatFile satFile;
+
+    @Enumerated(STRING)
+    private InvoiceStatus status;
+
+    private Date voidedAt;
 
     @Basic(optional = false)
     private Date createdAt;

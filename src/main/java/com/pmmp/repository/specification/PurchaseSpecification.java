@@ -1,6 +1,7 @@
 package com.pmmp.repository.specification;
 
 import com.pmmp.model.Purchase;
+import com.pmmp.model.enums.InvoiceStatus;
 import com.pmmp.model.enums.RegisterType;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -30,6 +31,7 @@ public class PurchaseSpecification implements Specification<Purchase> {
     private final BigDecimal ivaAmount;
     private final RegisterType registerType;
     private final UUID satFileId;
+    private final InvoiceStatus status;
 
     public PurchaseSpecification(final Date fromDate,
                                  final Date toDate,
@@ -42,7 +44,8 @@ public class PurchaseSpecification implements Specification<Purchase> {
                                  final BigDecimal amount,
                                  final BigDecimal ivaAmount,
                                  final RegisterType registerType,
-                                 final UUID satFileId) {
+                                 final UUID satFileId,
+                                 final InvoiceStatus status) {
         this.fromDate = fromDate;
         this.toDate = toDate;
         this.documentNumber = documentNumber;
@@ -55,6 +58,7 @@ public class PurchaseSpecification implements Specification<Purchase> {
         this.ivaAmount = ivaAmount;
         this.registerType = registerType;
         this.satFileId = satFileId;
+        this.status = status;
     }
 
     @Override
@@ -107,6 +111,10 @@ public class PurchaseSpecification implements Specification<Purchase> {
 
         if (nonNull(satFileId)) {
             predicates.add(criteriaBuilder.equal(root.get("satFile").get("id"), satFileId));
+        }
+
+        if(nonNull(status)){
+            predicates.add(criteriaBuilder.equal(root.get("status"), status));
         }
 
         return criteriaBuilder.and(predicates.toArray(predicates.toArray(new Predicate[0])));

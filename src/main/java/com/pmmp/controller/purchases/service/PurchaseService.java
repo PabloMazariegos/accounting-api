@@ -1,6 +1,7 @@
 package com.pmmp.controller.purchases.service;
 
 import com.pmmp.model.Purchase;
+import com.pmmp.model.enums.InvoiceStatus;
 import com.pmmp.model.enums.RegisterType;
 import com.pmmp.repository.PurchaseRepository;
 import com.pmmp.repository.specification.PurchaseSpecification;
@@ -32,6 +33,7 @@ public class PurchaseService {
                                        final BigDecimal ivaAmount,
                                        final RegisterType registerType,
                                        final UUID satFileId,
+                                       final InvoiceStatus status,
                                        final Pageable pageable) {
 
         final PurchaseSpecification purchaseSpecification = new PurchaseSpecification(fromDate,
@@ -45,7 +47,7 @@ public class PurchaseService {
                 amount,
                 ivaAmount,
                 registerType,
-                satFileId);
+                satFileId, status);
 
         return purchaseRepository.findAll(purchaseSpecification, pageable);
     }

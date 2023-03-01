@@ -2,6 +2,7 @@ package com.pmmp.controller.sales;
 
 import com.pmmp.controller.sales.assembler.SaleResourceModelAssembler;
 import com.pmmp.model.Sale;
+import com.pmmp.model.enums.InvoiceStatus;
 import com.pmmp.model.enums.RegisterType;
 import com.pmmp.controller.sales.resource.SaleResourceModel;
 import com.pmmp.controller.sales.service.SaleService;
@@ -48,10 +49,22 @@ public class SalesController {
                                                   @RequestParam(value = "amount", required = false) BigDecimal amount,
                                                   @RequestParam(value = "register_type", required = false) RegisterType registerType,
                                                   @RequestParam(value = "sat_file_id", required = false) UUID satFileId,
+                                                  @RequestParam(value = "status", required = false) InvoiceStatus status,
                                                   @SortDefault(sort = "createdAt", direction = DESC) final Pageable pageable,
                                                   final PagedResourcesAssembler<Sale> assembler) {
 
-        final Page<Sale> sales = saleService.getSales(fromDate, toDate, documentNumber, serial, number, nit, clientName, amount, registerType, satFileId, pageable);
+        final Page<Sale> sales = saleService.getSales(fromDate,
+                toDate,
+                documentNumber,
+                serial,
+                number,
+                nit,
+                clientName,
+                amount,
+                registerType,
+                satFileId,
+                status,
+                pageable);
 
         return assembler.toModel(sales, saleResourceModelAssembler);
 

@@ -8,6 +8,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -18,15 +19,15 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Builder
 public class TaxFormSpecification implements Specification<TaxForm> {
-    private final Date fromDate;
-    private final Date toDate;
+    private final LocalDate fromDate;
+    private final LocalDate toDate;
     private final UUID id;
     private final String number;
     private final String accessNumber;
     private final String type;
 
-    public TaxFormSpecification(final Date fromDate,
-                                final Date toDate,
+    public TaxFormSpecification(final LocalDate fromDate,
+                                final LocalDate toDate,
                                 final UUID id,
                                 final String number,
                                 final String accessNumber,
@@ -44,11 +45,11 @@ public class TaxFormSpecification implements Specification<TaxForm> {
         final List<Predicate> predicates = new ArrayList<>();
 
         if (nonNull(fromDate)) {
-            predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("createdAt"), fromDate));
+            predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("filedAt"), fromDate));
         }
 
         if (nonNull(toDate)) {
-            predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("createdAt"), toDate));
+            predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("filedAt"), toDate));
         }
 
         if (nonNull(id)) {

@@ -3,6 +3,7 @@ package com.pmmp.controller.files.service.satfiles;
 import com.pmmp.model.Purchase;
 import com.pmmp.model.SatFile;
 import com.pmmp.controller.files.resource.ProcessSatFileResource;
+import com.pmmp.model.enums.InvoiceStatus;
 import com.pmmp.repository.PurchaseRepository;
 import com.pmmp.service.TaxConfigurationService;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -86,11 +87,15 @@ public class PurchaseFileService extends AbstractSatFilesService {
         final String amount = getCellValue(fileRow, columns, "monto (gran total)");
         final String ivaAmount = getCellValue(fileRow, columns, "iva (monto de este impuesto)");
         final String createdAt = getCellValue(fileRow, columns, "fecha de emision");
+        final String status = getCellValue(fileRow, columns, "estado");
+        final String voidedAt = getCellValue(fileRow, columns, "fecha de anulacion");
 
         final BigDecimal convertedAmount = convertBigDecimalWithTaxConfiguration(amount);
         final BigDecimal convertedIvaAmount = convertBigDecimal(ivaAmount);
-        final Date convertedCreatedAt = convertCreatedAt(createdAt);
+        final Date convertedCreatedAt = convertToDateWithoutTimeZone(createdAt);
         final BigDecimal amountWithoutIva = convertedAmount.subtract(convertedIvaAmount);
+        final InvoiceStatus invoiceStatus = convertToInvoiceStatus(status);
+        final Date convertedVoidedAt = convertToDateWithoutTimeZone(voidedAt);
 
         return Purchase.builder()
                 .id(UUID.randomUUID())
@@ -103,6 +108,8 @@ public class PurchaseFileService extends AbstractSatFilesService {
                 .ivaAmount(convertedIvaAmount)
                 .amountWithoutIva(amountWithoutIva)
                 .registerType(UPLOADED)
+                .status(invoiceStatus)
+                .voidedAt(convertedVoidedAt)
                 .createdAt(convertedCreatedAt)
                 .build();
     }

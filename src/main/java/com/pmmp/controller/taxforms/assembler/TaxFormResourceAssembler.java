@@ -13,6 +13,7 @@ public class TaxFormResourceAssembler implements RepresentationModelAssembler<Ta
                 .id(source.getId())
                 .accessNumber(source.getAccessNumber())
                 .type(source.getType())
+                .filedAt(source.getFiledAt())
                 .createdAt(source.getCreatedAt())
                 .number(source.getNumber())
                 .build();

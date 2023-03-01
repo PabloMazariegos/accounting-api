@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
@@ -21,8 +22,8 @@ public class TaxFormService {
         this.taxFormRepository = taxFormRepository;
     }
 
-    public Page<TaxForm> getTaxForms(final Date fromDate,
-                                     final Date toDate,
+    public Page<TaxForm> getTaxForms(final LocalDate fromDate,
+                                     final LocalDate toDate,
                                      final String number,
                                      final String accessNumber,
                                      final String type,
@@ -61,6 +62,7 @@ public class TaxFormService {
                 .number(createTaxFormRequest.getNumber())
                 .accessNumber(createTaxFormRequest.getAccessNumber())
                 .type(createTaxFormRequest.getType())
+                .filedAt(createTaxFormRequest.getFiledAt())
                 .build();
 
         taxFormRepository.save(taxForm);

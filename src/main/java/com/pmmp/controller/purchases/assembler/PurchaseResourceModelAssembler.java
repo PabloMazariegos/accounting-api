@@ -21,6 +21,8 @@ public class PurchaseResourceModelAssembler implements RepresentationModelAssemb
                 .ivaAmount(source.getIvaAmount())
                 .registerType(source.getRegisterType())
                 .satFileId(source.getSatFile().getId())
+                .status(source.getStatus())
+                .voidedAt(source.getVoidedAt())
                 .createdAt(source.getCreatedAt())
                 .build();
     }

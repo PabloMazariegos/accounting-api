@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.server.core.Relation;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.UUID;
 
@@ -20,5 +21,6 @@ public class TaxFormResourceModel extends RepresentationModel<TaxFormResourceMod
     private String number;
     private String accessNumber;
     private String type;
+    private LocalDate filedAt;
     private Date createdAt;
 }

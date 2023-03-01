@@ -14,6 +14,7 @@ import org.springframework.hateoas.PagedModel;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.UUID;
 
@@ -36,8 +37,8 @@ public class TaxFormController {
 
     @GetMapping
     @ResponseStatus(OK)
-    public PagedModel<TaxFormResourceModel> getTaxForms(@RequestParam(value = "from_date") @DateTimeFormat(iso = DATE) Date fromDate,
-                                                        @RequestParam(value = "to_date") @DateTimeFormat(iso = DATE) Date toDate,
+    public PagedModel<TaxFormResourceModel> getTaxForms(@RequestParam(value = "from_date") @DateTimeFormat(iso = DATE) LocalDate fromDate,
+                                                        @RequestParam(value = "to_date") @DateTimeFormat(iso = DATE) LocalDate toDate,
                                                         @RequestParam(value = "number", required = false) String number,
                                                         @RequestParam(value = "access_number", required = false) String accessNumber,
                                                         @RequestParam(value = "type", required = false) String type,

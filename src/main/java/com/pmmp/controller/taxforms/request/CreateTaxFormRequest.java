@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -19,4 +20,7 @@ public class CreateTaxFormRequest {
 
     @NotBlank(message = "{tax-forms.request.error.type.not-blank}")
     private final String type;
+
+    @NotNull(message = "{tax-forms.request.error.filed-at.not-blank}")
+    private final LocalDate filedAt;
 }

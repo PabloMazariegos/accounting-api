@@ -2,6 +2,7 @@ package com.pmmp.controller.purchases;
 
 import com.pmmp.controller.purchases.assembler.PurchaseResourceModelAssembler;
 import com.pmmp.model.Purchase;
+import com.pmmp.model.enums.InvoiceStatus;
 import com.pmmp.model.enums.RegisterType;
 import com.pmmp.controller.purchases.resource.PurchaseResourceModel;
 import com.pmmp.controller.purchases.service.PurchaseService;
@@ -51,6 +52,7 @@ public class PurchasesController {
                                                           @RequestParam(value = "iva_amount", required = false) BigDecimal ivaAmount,
                                                           @RequestParam(value = "register_type", required = false) RegisterType registerType,
                                                           @RequestParam(value = "sat_file_id", required = false) UUID satFileId,
+                                                          @RequestParam(value = "status", required = false) InvoiceStatus status,
                                                           @SortDefault(sort = "createdAt", direction = DESC) final Pageable pageable,
                                                           final PagedResourcesAssembler<Purchase> assembler) {
 
@@ -66,6 +68,7 @@ public class PurchasesController {
                 ivaAmount,
                 registerType,
                 satFileId,
+                status,
                 pageable);
 
         return assembler.toModel(purchases, purchaseResourceModelAssembler);

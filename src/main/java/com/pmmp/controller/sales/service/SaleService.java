@@ -1,6 +1,7 @@
 package com.pmmp.controller.sales.service;
 
 import com.pmmp.model.Sale;
+import com.pmmp.model.enums.InvoiceStatus;
 import com.pmmp.model.enums.RegisterType;
 import com.pmmp.repository.SaleRepository;
 import com.pmmp.repository.specification.SaleSpecification;
@@ -30,6 +31,7 @@ public class SaleService {
                                final BigDecimal amount,
                                final RegisterType registerType,
                                final UUID satFileId,
+                               final InvoiceStatus status,
                                final Pageable pageable) {
 
         final SaleSpecification saleSpecification = new SaleSpecification(fromDate,
@@ -41,7 +43,8 @@ public class SaleService {
                 clientName,
                 amount,
                 registerType,
-                satFileId);
+                satFileId,
+                status);
 
         return salesRepository.findAll(saleSpecification, pageable);
     }

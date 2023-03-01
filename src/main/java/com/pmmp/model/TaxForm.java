@@ -14,6 +14,7 @@ import javax.persistence.EntityListeners;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.UUID;
 
@@ -37,6 +38,8 @@ public class TaxForm {
 
     @Basic(optional = false)
     private String type;
+
+    private LocalDate filedAt;
 
     @Basic(optional = false)
     @Column(updatable = false)

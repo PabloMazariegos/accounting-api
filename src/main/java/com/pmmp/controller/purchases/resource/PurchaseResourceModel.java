@@ -1,6 +1,7 @@
 package com.pmmp.controller.purchases.resource;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.pmmp.model.enums.InvoiceStatus;
 import com.pmmp.model.enums.RegisterType;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,5 +29,7 @@ public class PurchaseResourceModel extends RepresentationModel<PurchaseResourceM
     private BigDecimal ivaAmount;
     private RegisterType registerType;
     private UUID satFileId;
+    private InvoiceStatus status;
+    private Date voidedAt;
     private Date createdAt;
 }

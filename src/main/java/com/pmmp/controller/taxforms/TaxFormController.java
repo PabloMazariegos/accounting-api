@@ -51,7 +51,7 @@ public class TaxFormController {
 
     @PostMapping
     @ResponseStatus(CREATED)
-    public void createTaxForm(@Valid @RequestBody final CreateTaxFormRequest createTaxFormRequest){
+    public void createTaxForm(@RequestBody @Valid final CreateTaxFormRequest createTaxFormRequest){
         taxFormService.createTaxForm(createTaxFormRequest);
     }
 }

@@ -91,6 +91,7 @@ public class SalesFileService extends AbstractSatFilesService {
         final String createdAt = getCellValue(fileRow, columns, "fecha de emision");
         final String status = getCellValue(fileRow, columns, "estado");
         final String voidedAt = getCellValue(fileRow, columns, "fecha de anulacion");
+        final String currency = getCellValue(fileRow, columns, "Moneda");
 
         final UUID convertedDocumentNumber = convertDocumentNumber(documentNumber);
         final BigDecimal convertedAmount = convertBigDecimalWithTaxConfiguration(amount);
@@ -116,6 +117,7 @@ public class SalesFileService extends AbstractSatFilesService {
                 .status(invoiceStatus)
                 .voidedAt(convertedVoidedAt)
                 .createdAt(convertedCreatedAt)
+                .currency(currency)
                 .build();
     }
 }

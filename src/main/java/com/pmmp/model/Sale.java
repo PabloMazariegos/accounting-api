@@ -76,6 +76,8 @@ public class Sale {
     @Enumerated(STRING)
     private InvoiceStatus status;
 
+    private String currency;
+
     private Date voidedAt;
 
     @Basic(optional = false)

@@ -17,6 +17,7 @@ import java.util.UUID;
 
 import static java.time.format.DateTimeFormatter.ISO_DATE_TIME;
 import static java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static org.apache.logging.log4j.util.Strings.isBlank;
 
@@ -92,6 +93,10 @@ public abstract class AbstractSatFilesService {
 
         final Integer columnNumber = columns.get(columnName);
         final HSSFCell cell = fileRow.getCell(columnNumber);
+
+        if(isNull(cell)){
+            return null;
+        }
 
         switch (cell.getCellType()) {
             case NUMERIC:

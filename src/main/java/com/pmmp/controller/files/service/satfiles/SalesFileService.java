@@ -86,7 +86,7 @@ public class SalesFileService extends AbstractSatFilesService {
         final String invoiceNumber = getCellValue(fileRow, columns, "numero del dte");
         final String nit = getCellValue(fileRow, columns, "id del receptor");
         final String clientName = getCellValue(fileRow, columns, "nombre completo del receptor");
-        final String amount = getCellValue(fileRow, columns, "monto (gran total)");
+        final String amount = getCellValue(fileRow, columns, "gran total (moneda original)");
         final String ivaAmount = getCellValue(fileRow, columns, "iva (monto de este impuesto)");
         final String createdAt = getCellValue(fileRow, columns, "fecha de emision");
         final String status = getCellValue(fileRow, columns, "estado");
